@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
 
     printf(COLOR_BLUE "program_start\n");
 
-    printf(COLOR_BLUE "file_list_read_start\n");
+    printf(COLOR_BLUE TAB "file_list_read_start\n");
     std::ifstream ifstream_file_list;
     ifstream_file_list.open(file_list, std::ios::in);
     try {
@@ -50,22 +50,22 @@ int main(int argc, char **argv) {
         }
         ifstream_file_list.close();
     } catch (...) {
-        printf(COLOR_RED "file_list_read_exception\n");
+        printf(COLOR_RED TAB "file_list_read_exception\n");
         return 5;
     }
-    printf(COLOR_GREEN "file_list_read_end\n");
+    printf(COLOR_GREEN TAB "file_list_read_end\n");
 
-    printf(COLOR_BLUE "build_index_start\n");
+    printf(COLOR_BLUE TAB "build_index_start\n");
     std::unordered_map<std::string, struct link_list> index;
     try {
         index = indexer(file_name).get_index();
     } catch (...) {
-        printf(COLOR_RED "build_index_exception\n");
+        printf(COLOR_RED TAB "build_index_exception\n");
         return 6;
     }
-    printf(COLOR_GREEN "build_index_end\n");
+    printf(COLOR_GREEN TAB "build_index_end\n");
 
-    printf(COLOR_BLUE "command_list_read_start\n");
+    printf(COLOR_BLUE TAB "command_list_read_start\n");
     std::ifstream ifstream_command_list;
     ifstream_command_list.open(command_list, std::ios::in);
     if (!ifstream_command_list.is_open()) {
@@ -79,32 +79,33 @@ int main(int argc, char **argv) {
         }
         ifstream_command_list.close();
     } catch (...) {
-        printf(COLOR_RED "command_list_read_exception\n");
+        printf(COLOR_RED TAB "command_list_read_exception\n");
         return 7;
     }
-    printf(COLOR_GREEN "command_list_read_end\n");
+    printf(COLOR_GREEN TAB "command_list_read_end\n");
 
-    printf(COLOR_BLUE "command_parse_and_execute_start\n");
+    printf(COLOR_BLUE TAB "command_parse_and_execute_start\n");
     std::vector<struct link_list *> result_list;
     for (auto &command: commands) {
         try {
             auto parsed_command = parser(command).get_parsed_command();
             if (parsed_command.empty()) {
-                printf(COLOR_YELLOW "maybe_invalid_command\n");
+                printf(COLOR_YELLOW TAB "ignored_invalid_command\n");
+            } else {
+                auto link_list_res = boolean_retrieval(index, parsed_command);
+                if (link_list_res->begin_ptr()->file_id == -1) {
+                    printf(COLOR_YELLOW TAB "maybe_unwanted_result\n");
+                }
+                result_list.emplace_back(link_list_res);
             }
-            auto link_list_res = boolean_retrieval(index, parsed_command);
-            if (link_list_res->begin_ptr()->file_id == -1) {
-                printf(COLOR_YELLOW "maybe_unwanted_result\n");
-            }
-            result_list.emplace_back(link_list_res);
         } catch (...) {
-            printf(COLOR_RED "command_parse_or_execute_exception\n");
+            printf(COLOR_RED TAB "command_parse_or_execute_exception\n");
             return 8;
         }
     }
-    printf(COLOR_GREEN "command_parse_and_execute_end\n");
+    printf(COLOR_GREEN TAB "command_parse_and_execute_end\n");
 
-    printf(COLOR_BLUE "result_write_start\n");
+    printf(COLOR_BLUE TAB "result_write_start\n");
     std::ofstream ofstream_result("result.txt");
     try {
         for (auto &result: result_list) {
@@ -112,10 +113,10 @@ int main(int argc, char **argv) {
         }
         ofstream_result.close();
     } catch (...) {
-        printf(COLOR_RED "result_write_exception\n");
+        printf(COLOR_RED TAB "result_write_exception\n");
         return 9;
     }
-    printf(COLOR_GREEN "result_write_end\n");
+    printf(COLOR_GREEN TAB "result_write_end\n");
 
     printf(COLOR_GREEN "program_end\n");
     return 0;
