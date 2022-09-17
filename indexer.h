@@ -6,6 +6,7 @@
 #define SEP_16_INDEXER_H
 
 #include <unordered_map>
+#include <algorithm>
 #include <fstream>
 #include <sstream>
 #include "exception.h"
