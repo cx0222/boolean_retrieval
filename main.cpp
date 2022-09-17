@@ -88,17 +88,24 @@ int main(int argc, char **argv) {
     printf(COLOR_BLUE TAB "command_parse_and_execute_start\n");
     std::vector<struct link_list *> result_list;
     for (auto &command: commands) {
+        std::string parsed_command;
         try {
-            auto parsed_command = parser(command).get_parsed_command();
+            parsed_command = parser(command).get_parsed_command();
+            printf(COLOR_NORMAL TAB "command = %s\n", parsed_command.c_str());
             if (parsed_command.empty()) {
-                printf(COLOR_YELLOW TAB "ignored_invalid_command\n");
-            } else {
-                auto link_list_res = boolean_retrieval(index, parsed_command);
-                if (link_list_res->begin_ptr()->file_id == -1) {
-                    printf(COLOR_YELLOW TAB "maybe_unwanted_result\n");
-                }
-                result_list.emplace_back(link_list_res);
+                throw std::exception();
             }
+        }
+        catch (...) {
+            printf(COLOR_YELLOW TAB TAB "ignored_invalid_command\n");
+            continue;
+        }
+        try {
+            auto link_list_res = boolean_retrieval(index, parsed_command);
+            if (link_list_res->begin_ptr()->file_id == -1) {
+                printf(COLOR_YELLOW TAB "maybe_unwanted_result\n");
+            }
+            result_list.emplace_back(link_list_res);
         } catch (...) {
             printf(COLOR_RED TAB "command_parse_or_execute_exception\n");
             return 8;
