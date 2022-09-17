@@ -140,9 +140,12 @@ void indexer::build_index(const std::vector<std::string> &file_name_list) {
         }
         std::stringstream buffer;
         buffer << ifstream.rdbuf();
-        std::string content(buffer.str());
-        _build_index(i++, content);
         ifstream.close();
+        std::string content(buffer.str());
+        if (content.empty()) {
+            printf(COLOR_YELLOW TAB "ignored_empty_file\n");
+        }
+        _build_index(i++, content);
     }
 }
 
