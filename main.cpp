@@ -1,5 +1,6 @@
 #include <sstream>
 #include <cstdio>
+#include <vector>
 #include "boolean.h"
 #include "exception.h"
 #include "indexer.h"
