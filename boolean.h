@@ -27,12 +27,6 @@ struct link_list *boolean_and_1(std::unordered_map<std::string, struct link_list
     return res;
 }
 
-struct link_list *boolean_and(std::unordered_map<std::string, struct link_list> &map,
-                              const std::string &str1, const std::string &str2) {
-    link_list &list1 = map[str1], &list2 = map[str2];
-    return boolean_and_1(map, list1, list2);
-}
-
 struct link_list *boolean_or_1(std::unordered_map<std::string, struct link_list> &map,
                                const struct link_list &list1, const struct link_list &list2) {
     auto res = new struct link_list();
@@ -60,12 +54,6 @@ struct link_list *boolean_or_1(std::unordered_map<std::string, struct link_list>
         list2_ptr = list2_ptr->next;
     }
     return res;
-}
-
-struct link_list *boolean_or(std::unordered_map<std::string, struct link_list> &map,
-                             const std::string &str1, const std::string &str2) {
-    link_list &list1 = map[str1], &list2 = map[str2];
-    return boolean_or_1(map, list1, list2);
 }
 
 struct link_list *
