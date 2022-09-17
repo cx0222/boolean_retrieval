@@ -5,7 +5,6 @@
 #ifndef SEP_16_PARSER_H
 #define SEP_16_PARSER_H
 
-#include <iostream>
 #include <string>
 #include <stack>
 
