@@ -36,43 +36,41 @@ void parser::command_parser() {
     while (ptr != end) {
         char ch = *ptr;
         if (ch > 96 && ch < 123) {
+            // 遇到要查询的单词
             auto last_pos = ptr;
             ++ptr;
             while (ptr != end && *ptr > 96 && *ptr < 123) {
                 ++ptr;
             }
             this->parsed_command_string.append(std::string(last_pos, ptr) + ' ');
-            continue;
         } else if (ch > 64 && ch < 91) {
             *ptr += 32; // 注意这里不要 ++ptr;
-            continue;
         } else if (ch == '|') {
-            if (!operator_stack.empty() && operator_stack.top() == '&') {
+            while (!operator_stack.empty() && operator_stack.top() != '(') {
                 this->parsed_command_string += operator_stack.top();
                 operator_stack.pop();
             }
             operator_stack.push('|');
             ptr += 2;
-            continue;
         } else if (ch == '&') {
+            while (!operator_stack.empty() && operator_stack.top() == '&' && operator_stack.top() != '(') {
+                this->parsed_command_string += operator_stack.top();
+                operator_stack.pop();
+            }
             operator_stack.push('&');
             ptr += 2;
-            continue;
         } else if (ch == '(') {
             operator_stack.push('(');
             ++ptr;
-            continue;
         } else if (ch == ')') {
             while (operator_stack.top() != '(') {
                 this->parsed_command_string += operator_stack.top();
                 operator_stack.pop();
             }
-            operator_stack.pop();
+            operator_stack.pop(); // 左括号要出栈
             ++ptr;
-            continue;
         } else {
             ++ptr;
-            continue;
         }
     }
     while (!operator_stack.empty()) {
